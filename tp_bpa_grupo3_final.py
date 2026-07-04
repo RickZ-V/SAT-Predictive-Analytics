@@ -128,7 +128,7 @@ columnas_descripcion = {
 
 desc_df = pd.DataFrame(list(columnas_descripcion.items()),
                         columns=['Columna', 'Descripción'])
-display(desc_df)
+desc_df
 
 # Tipos de dato actuales — verificación inicial
 print('Tipos de dato por columna:')
