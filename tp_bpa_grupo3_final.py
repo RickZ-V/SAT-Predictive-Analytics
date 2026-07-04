@@ -677,7 +677,7 @@ importancias = pd.DataFrame({
 print(f'Importancia promedio: {rf_selector.feature_importances_.mean():.4f}')
 print()
 print('Top features:')
-display(importancias)
+importancias
 
 # Visualizar importancias
 plt.figure(figsize=(9, 5))
