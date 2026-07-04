@@ -95,14 +95,6 @@ warnings.filterwarnings('ignore')
 
 print('✓ Setup completo')
 
-# Montar Google Drive
-from google.colab import drive
-drive.mount('/content/drive')
-
-import os
-ruta = r'/content/drive/MyDrive/Trabajo_BPA'
-os.chdir(ruta)
-
 """---
 ## Capítulo 2.1 — Collect Data
 
@@ -113,9 +105,7 @@ durante el primer trimestre de 2026 (Enero–Marzo).
 """
 
 # Cargar el CSV desde Google Drive
-df = pd.read_csv(
-    '/content/drive/MyDrive/Trabajo_BPA/Multas_transito_Pagadas_Ene_Mar_2026_I_TRIM_SAT.csv'
-)
+df = pd.read_csv('Multas_transito_Pagadas_Ene_Mar_2026_I_TRIM_SAT.csv')
 
 # Vista rápida del tamaño
 print(f'Registros (filas)   : {df.shape[0]}')
