@@ -312,7 +312,7 @@ resumen_num = pd.DataFrame({
     'Curtosis':                df_num.kurtosis(),
     'Coef. variación':        (df_num.std() / df_num.mean()).round(4),
 })
-display(resumen_num.round(3))
+resumen_num.round(3)
 
 print('\nInterpretación:')
 print('  skew > 1  → sesgo positivo fuerte (cola derecha larga)')
@@ -484,7 +484,7 @@ top10 = (df.groupby(['Código falta','Descripción falta'])
            .size().reset_index(name='Cantidad')
            .sort_values('Cantidad', ascending=False)
            .head(10))
-display(top10)
+top10
 
 # Gráfico
 top10.sort_values('Cantidad').plot(
@@ -521,7 +521,7 @@ tabla_grav = df.groupby('Nivel de gravedad').agg(
     Rezago_promedio=('Años de rezago', 'mean')
 ).sort_values('Total_S', ascending=False)
 
-display(tabla_grav.round(2))
+tabla_grav.round(2)
 
 """---
 ## Capítulo 2.3 — Transformación de Datos e Implementación de Pipeline
@@ -758,7 +758,7 @@ for nombre, pipe in pipelines.items():
 
 cv_df = pd.DataFrame(cv_resultados).sort_values('R² medio', ascending=False)
 print()
-display(cv_df)
+cv_df
 
 # Gráfico comparativo de R² por modelo
 fig, axes = plt.subplots(1, 2, figsize=(14, 5))
