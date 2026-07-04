@@ -236,7 +236,7 @@ print('  4. "Año pago" eliminada (valor constante = 2026)')
 print('  5. "Descripción falta" corregida (espacios dobles)')
 print('=' * 55)
 
-display(df.head(3))
+df.head(3)
 
 """---
 ## Feature Engineering — Variables derivadas
