@@ -107,7 +107,7 @@ print(f'Registros (filas)   : {df.shape[0]}')
 print(f'Variables (columnas): {df.shape[1]}')
 
 # Primeras filas para verificar la carga
-display(df.head())
+df.head()
 
 # Descripción de cada columna según dominio del SAT
 columnas_descripcion = {
