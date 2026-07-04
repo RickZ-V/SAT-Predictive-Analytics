@@ -31,11 +31,6 @@ Original file is located at
 #Librerias para Despliegue
 """
 
-# Instalar Streamlit
-!pip install -q streamlit
-# Instalar localtunnel para el puerto del servidor de Google
-!npm install -g localtunnel
-
 """## 0. Setup Global"""
 
 # Commented out IPython magic to ensure Python compatibility.
