@@ -100,7 +100,7 @@ durante el primer trimestre de 2026 (Enero–Marzo).
 """
 
 # Cargar el CSV desde Google Drive
-df = pd.read_csv('Multas_Pagadas.csv')
+df = pd.read_csv('/SAT-Predictive-Analytics/Multas_Pagadas.csv')
 
 # Vista rápida del tamaño
 print(f'Registros (filas)   : {df.shape[0]}')
