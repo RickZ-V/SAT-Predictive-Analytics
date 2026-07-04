@@ -43,7 +43,7 @@ tab_data, tab_train, tab_predict = st.tabs([
 # Carga de datos con caché estricta para liberar RAM
 @st.cache_data
 def cargar_y_procesar_datos():
-    df = pd.read_csv('Multas_transito_Pagadas_Ene_Mar_2026_I_TRIM_SAT.csv')
+    df = pd.read_csv('Multas_Pagadas.csv')
     
     if 'Año pago' in df.columns:
         df.drop(columns=['Año pago'], inplace=True)
