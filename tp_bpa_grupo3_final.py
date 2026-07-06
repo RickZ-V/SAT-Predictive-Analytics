@@ -86,7 +86,7 @@ with tab_data:
     st.markdown("### Muestra de Datos Procesados")
     st.dataframe(df_clean.head(10), use_container_width=True)
     
-    st.markdown("### Comportamiento del Negocio")
+  st.markdown("### Visualizaciones Clave del Negocio")
     col_graphs1, col_graphs2 = st.columns(2)
     
     with col_graphs1:
@@ -101,8 +101,12 @@ with tab_data:
         st.subheader("Análisis de Dispersión: Monto Emitido vs Total Pagado")
         fig2, ax2 = plt.subplots(figsize=(5, 3.5))
         sns.scatterplot(data=df_clean, x='Monto emitido', y='Monto total pagado', alpha=0.4, color='steelblue', ax=ax2)
-        ax2.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'{x:,.0f}'))
-        ax2.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'{x:,.0f}'))
+      
+        ax2.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'S/ {x:,.0f}'))
+        ax2.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'S/ {x:,.0f}'))
+
+        plt.setp(ax2.get_xticklabels(), rotation=15, ha="right")
+        
         st.pyplot(fig2)
         plt.close(fig2)
 
