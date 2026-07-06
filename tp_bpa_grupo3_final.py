@@ -100,7 +100,7 @@ with tab_data:
     with col_graphs2:
         st.subheader("Análisis de Dispersión: Monto Emitido vs Total Pagado")
         fig2, ax2 = plt.subplots(figsize=(5, 3.5))
-        sns.scatterplot(data=df_clean, x='Monto emitido', y='Monto total pagado', alpha=0.4, color='semibold', ax=ax2)
+        sns.scatterplot(data=df_clean, x='Monto emitido', y='Monto total pagado', alpha=0.4, color='steelblue', ax=ax2)
         ax2.xaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'{x:,.0f}'))
         ax2.yaxis.set_major_formatter(mticker.FuncFormatter(lambda x, _: f'{x:,.0f}'))
         st.pyplot(fig2)
