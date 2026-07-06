@@ -43,7 +43,7 @@ tab_data, tab_train, tab_predict = st.tabs([
 # Carga de datos con caché estricta para liberar RAM
 @st.cache_data
 def cargar_y_procesar_datos():
-    df = pd.read_csv('Multas_Pagadas')
+    df = pd.read_csv('Multas_Pagadas.csv')
     
     # Capítulo 2.2 — Limpieza de datos constants
     if 'Año pago' in df.columns:
