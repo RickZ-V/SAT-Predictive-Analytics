@@ -120,60 +120,69 @@ with tab_train:
     test_percentage = st.slider("Tamaño del Set de Validación (Test Split)", 0.10, 0.40, 0.20, step=0.05)
     
     if st.button("🚀 Inicializar Pipeline v4 (Sin Leakage)"):
-        with st.spinner("Entrenando modelos y calculando métricas honestas..."):
-            
-            # Definición de columnas basada en tu script de Colab
-            cols_num = ['Monto emitido', 'Años de rezago', 'Descuento', 'Reincidencia pagada', 'Cant. multas con pagos']
-            cols_nom = ['Tipo formato', 'Mes pago nombre']
-            cols_ord = ['Nivel de gravedad']
-            TARGET = 'Monto total pagado'
-            
-            X_B = df_clean[cols_num + cols_nom + cols_ord].copy()
-            y_B = df_clean[TARGET].copy()
-            
-            # PASO ESENCIAL: Split inmediato para erradicar el Data Leakage
-            X_train_B, X_test_B, y_train_B, y_test_B = train_test_split(X_B, y_B, test_size=test_percentage, random_state=42)
-            
-            # Arquitectura del Preprocesador aislado
-            pipe_num_B = Pipeline([
-                ('imputer', SimpleImputer(strategy='median')),
-                ('yeo_johnson', PowerTransformer(method='yeo-johnson', standardize=False)),
-                ('scaler', RobustScaler())
-            ])
-            pipe_nom_B = Pipeline([('onehot', OneHotEncoder(drop='first', handle_unknown='ignore', sparse_output=False))])
-            pipe_ord_B = Pipeline([('ordinal', OrdinalEncoder(categories=[['L', 'M', 'G']], handle_unknown='use_encoded_value', unknown_value=-1))])
-            
-            preprocesador_B = ColumnTransformer(transformers=[
-                ('num', pipe_num_B, cols_num), ('nom', pipe_nom_B, cols_nom), ('ord', pipe_ord_B, cols_ord)
-            ], remainder='drop')
-            
-            # 1. Benchmarking de Algoritmos Base en Cross-Validation
-            modelos_dict = {
-                'Regresión Lineal': LinearRegression(),
-                'Ridge': Ridge(alpha=1.0),
-                'Lasso': Lasso(alpha=1.0, max_iter=5000),
-                'Árbol Decisión': DecisionTreeRegressor(max_depth=6, random_state=42),
-                'Random Forest (Base)': RandomForestRegressor(n_estimators=50, max_depth=10, random_state=42),
-                'Gradient Boosting': GradientBoostingRegressor(n_estimators=50, max_depth=4, random_state=42)
-            }
-            
-            kf = KFold(n_splits=5, shuffle=True, random_state=42)
-            cv_resultados = []
-            
-            for nombre, modelo in modelos_dict.items():
-                pipe_eval = Pipeline([('prep', preprocesador_B), ('model', modelo)])
-                r2_scores = cross_val_score(pipe_eval, X_train_B, y_train_B, cv=kf, scoring='r2')
-                rmse_scores = np.sqrt(-cross_val_score(pipe_eval, X_train_B, y_train_B, cv=kf, scoring='neg_mean_squared_error'))
-                cv_resultados.append({
-                    'Modelo': nombre,
-                    'R² Medio (CV)': r2_scores.mean(),
-                    'RMSE Medio': rmse_scores.mean()
-                })
-                
-            cv_df = pd.DataFrame(cv_resultados).sort_values('R² Medio (CV)', ascending=False)
-            
-            st.subheader("📊 Comparativa de Algoritmos Base (Validación Cruzada)")
-            st.dataframe(cv_df.style.format({'R² Medio (CV)': '{:.4f}', 'RMSE Medio': 'S/ {:,.2f}'}), use_container_width=True)
+                with st.spinner("Entrenando de acuerdo al Modelo B del Notebook..."):
+                    
+                    # CORRECCIÓN DE VARIABLES: Quitamos Monto emitido, Descuento y Reincidencia
+                    cols_num_B = ['Años de rezago', 'Cant. multas con pagos']
+                    cols_nom_B = ['Tipo formato', 'Mes pago nombre']
+                    cols_ord_B = ['Nivel de gravedad']
+                    TARGET = 'Monto total pagado'
+                    
+                    X_B = df_clean[cols_num_B + cols_nom_B + cols_ord_B].copy()
+                    y_B = df_clean[TARGET].copy()
+                    
+                    # Split con los mismos parámetros del notebook
+                    X_train_B, X_test_B, y_train_B, y_test_B = train_test_split(
+                        X_B, y_B, test_size=0.20, random_state=42
+                    )
+                    
+                    # Sub-pipelines del preprocesador B
+                    pipe_num_B = Pipeline(steps=[
+                        ('imputer', SimpleImputer(strategy='median')),
+                        ('scaler', RobustScaler())
+                    ])
+                    pipe_nom_B = Pipeline(steps=[
+                        ('onehot', OneHotEncoder(drop='first', handle_unknown='ignore', sparse_output=False))
+                    ])
+                    pipe_ord_B = Pipeline(steps=[
+                        ('ordinal', OrdinalEncoder(categories=[['L', 'M', 'G']],
+                                                    handle_unknown='use_encoded_value', unknown_value=-1))
+                    ])
+                    
+                    preprocesador_B = ColumnTransformer(transformers=[
+                        ('num', pipe_num_B, cols_num_B), 
+                        ('nom', pipe_nom_B, cols_nom_B), 
+                        ('ord', pipe_ord_B, cols_ord_B)
+                    ], remainder='drop')
+                    
+                    # Modelos Base idénticos a modelos_B de tu notebook
+                    modelos_B = {
+                        'Regresión Lineal': LinearRegression(),
+                        'Ridge': Ridge(alpha=1.0),
+                        'Lasso': Lasso(alpha=1.0, max_iter=5000),
+                        'Árbol Decisión': DecisionTreeRegressor(max_depth=6, random_state=42),
+                        'Random Forest': RandomForestRegressor(n_estimators=100, random_state=42, n_jobs=-1),
+                        'Gradient Boosting': GradientBoostingRegressor(n_estimators=100, random_state=42),
+                    }
+                    
+                    kf_B = KFold(n_splits=5, shuffle=True, random_state=42)
+                    cv_resultados_B = []
+                    
+                    for nombre, modelo in modelos_B.items():
+                        pipe = Pipeline([('prep', preprocesador_B), ('model', modelo)])
+                        r2_scores = cross_val_score(pipe, X_train_B, y_train_B, cv=kf_B, scoring='r2')
+                        rmse_scores = np.sqrt(-cross_val_score(pipe, X_train_B, y_train_B, cv=kf_B, scoring='neg_mean_squared_error'))
+                        
+                        cv_resultados_B.append({
+                            'Modelo': nombre,
+                            'R² Medio (CV)': r2_scores.mean(),
+                            'RMSE Medio': rmse_scores.mean()
+                        })
+                        
+                    cv_df_B = pd.DataFrame(cv_resultados_B).sort_values('R² Medio (CV)', ascending=False)
+                    
+                    st.subheader("📊 Comparativa de Algoritmos Base (Validación Cruzada)")
+                    st.dataframe(cv_df_B.style.format({'R² Medio (CV)': '{:.4f}', 'RMSE Medio': 'S/ {:,.2f}'}), use_container_width=True)
             
             # 2. Carga del Modelo Ganador Optimizado por tu GridSearchCV (108 candidatos, 540 fits)
             st.markdown("---")
